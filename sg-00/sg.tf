@@ -79,7 +79,7 @@ resource "aws_vpc_security_group_ingress_rule" "frontend_http" {
 
 }
 
-resource "aws_vpc_security_group_ingress_rule" "shh" {
+resource "aws_vpc_security_group_ingress_rule" "sshh" {
   security_group_id = aws_security_group.frontend.id
   ip_protocol       = "tcp"
   from_port         = 22
