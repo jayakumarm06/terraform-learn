@@ -26,13 +26,35 @@ resource "aws_instance" "provisioners" {
     host     = self.public_ip
   }
 
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "sudo dnf install nginx -y",
+  #     "sudo systemctl start nginx",
+  #     "sudo systemctl enable nginx"
+  #   ]
+  # }
+
+  provisioner "file" {
+    source      = "bootstrap.sh"      # local file path
+    destination = "/tmp/bootstrap.sh" #remote target path
+
+  }
+
   provisioner "remote-exec" {
     inline = [
-      "sudo dnf install nginx -y",
-      "sudo systemctl start nginx",
-      "sudo systemctl enable nginx"
+      "chmod +x /tmp/bootstrap.sh",
+      "sudo sh /tmp/bootstrap.sh"
     ]
   }
+
+  provisioner "remote-exec" {
+    when = destroy
+    inline = [
+      "sudo systemctl stop nginx"
+    ]
+  }
+
+
 
   tags = {
     Name = "rooshop-provisioners"
